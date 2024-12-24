@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋愛確率計算機</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- ヘッダー -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-pink-600">クリスマスの恋人確率計算機</h1>
+            <p class="text-gray-600 mt-2">あなたの来年のクリスマスまでに恋人ができる確率を計算します</p>
+        </header>
+
+        <!-- メインフォーム -->
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+            <form id="calculator-form" class="space-y-6">
+                <!-- 質問1 -->
+                <div class="question-block">
+                    <label class="block text-lg font-medium text-gray-700 mb-4">
+                        Q1. 8回の会話中相手を不快にさせた数
+                    </label>
+                    <div class="flex items-center space-x-4">
+                        <input type="range" min="0" max="8" value="0" 
+                               class="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer">
+                        <span class="text-lg font-bold text-pink-600 w-8" id="q1-value">0</span>
+                    </div>
+                </div>
+
+                <!-- 質問2 -->
+                <div class="question-block">
+                    <label class="block text-lg font-medium text-gray-700 mb-4">
+                        Q2. 人と会話する時平均、10回中何回くらい相手を喜ばせているか
+                    </label>
+                    <div class="flex items-center space-x-4">
+                        <input type="range" min="0" max="10" step="0.5" value="0"
+                               class="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer">
+                        <span class="text-lg font-bold text-pink-600 w-12" id="q2-value">0</span>
+                    </div>
+                </div>
+
+                <!-- 質問3 -->
+                <div class="question-block">
+                    <label class="block text-lg font-medium text-gray-700 mb-4">
+                        Q3. 異性10人中、ルックスが悪くないと答えるだろう人の数
+                    </label>
+                    <div class="flex items-center space-x-4">
+                        <input type="range" min="0" max="10" step="0.1" value="0"
+                               class="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer">
+                        <span class="text-lg font-bold text-pink-600 w-12" id="q3-value">0</span>
+                    </div>
+                </div>
+
+                <!-- 質問4 -->
+                <div class="question-block">
+                    <label class="block text-lg font-medium text-gray-700 mb-4">
+                        Q4. 今年1年間で同年代の異性と会話した回数（重複なし）
+                    </label>
+                    <div class="flex items-center space-x-4">
+                        <input type="number" min="0" placeholder="回数を入力"
+                               class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
+                    </div>
+                </div>
+
+                <!-- 計算ボタン -->
+                <button type="submit" 
+                        class="w-full bg-pink-600 text-white py-3 px-6 rounded-lg font-bold hover:bg-pink-700 transition duration-200">
+                    確率を計算する
+                </button>
+            </form>
+        </div>
+
+        <!-- 結果表示エリア（初期状態では非表示） -->
+        <div id="result-area" class="max-w-2xl mx-auto mt-8 bg-white rounded-lg shadow-lg p-6 hidden">
+            <!-- 確率表示 -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-700">来年のクリスマスにあなたが誰かと一緒いる確率は...</h2>
+                <div class="text-5xl font-bold text-pink-600 mt-4">
+                    <span id="probability">-</span>%
+                </div>
+            </div>
+
+            <!-- 分析結果 -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-bold text-gray-700">分析結果</h3>
+                <div id="analysis" class="text-gray-600">
+                    <!-- JavaScriptで動的に追加 -->
+                </div>
+            </div>
+
+            <!-- アドバイス -->
+            <div class="mt-8 space-y-4">
+                <h3 class="text-xl font-bold text-gray-700">アドバイス</h3>
+                <div id="advice" class="text-gray-600">
+                    <!-- JavaScriptで動的に追加 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+      // 各スライダーのイベントリスナーを設定
+      document.addEventListener('DOMContentLoaded', function() {
+          // Q1のスライダー
+          const q1Slider = document.querySelector('input[type="range"]');
+          const q1Value = document.getElementById('q1-value');
+          q1Slider.addEventListener('input', function() {
+              q1Value.textContent = this.value;
+          });
+
+          // Q2のスライダー
+          const q2Slider = document.querySelectorAll('input[type="range"]')[1];
+          const q2Value = document.getElementById('q2-value');
+          q2Slider.addEventListener('input', function() {
+              q2Value.textContent = this.value;
+          });
+
+          // Q3のスライダー
+          const q3Slider = document.querySelectorAll('input[type="range"]')[2];
+          const q3Value = document.getElementById('q3-value');
+          q3Slider.addEventListener('input', function() {
+              q3Value.textContent = Number(this.value).toFixed(1);
+          });
+      });
+  </script>
+</body>
+</html>
