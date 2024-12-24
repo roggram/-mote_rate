@@ -99,30 +99,110 @@
             </div>
         </div>
     </div>
+
     <script>
-      // 各スライダーのイベントリスナーを設定
-      document.addEventListener('DOMContentLoaded', function() {
-          // Q1のスライダー
-          const q1Slider = document.querySelector('input[type="range"]');
-          const q1Value = document.getElementById('q1-value');
-          q1Slider.addEventListener('input', function() {
-              q1Value.textContent = this.value;
-          });
+        document.addEventListener('DOMContentLoaded', function() {
+            // スライダーの初期化
+            const q1Slider = document.querySelector('input[type="range"]');
+            const q1Value = document.getElementById('q1-value');
+            const q2Slider = document.querySelectorAll('input[type="range"]')[1];
+            const q2Value = document.getElementById('q2-value');
+            const q3Slider = document.querySelectorAll('input[type="range"]')[2];
+            const q3Value = document.getElementById('q3-value');
 
-          // Q2のスライダー
-          const q2Slider = document.querySelectorAll('input[type="range"]')[1];
-          const q2Value = document.getElementById('q2-value');
-          q2Slider.addEventListener('input', function() {
-              q2Value.textContent = this.value;
-          });
+            // スライダーの値更新処理
+            q1Slider.addEventListener('input', function() {
+                q1Value.textContent = this.value;
+            });
 
-          // Q3のスライダー
-          const q3Slider = document.querySelectorAll('input[type="range"]')[2];
-          const q3Value = document.getElementById('q3-value');
-          q3Slider.addEventListener('input', function() {
-              q3Value.textContent = Number(this.value).toFixed(1);
-          });
-      });
-  </script>
+            q2Slider.addEventListener('input', function() {
+                q2Value.textContent = this.value;
+            });
+
+            q3Slider.addEventListener('input', function() {
+                q3Value.textContent = Number(this.value).toFixed(1);
+            });
+
+            // フォームの送信処理
+            const form = document.getElementById('calculator-form');
+            const resultArea = document.getElementById('result-area');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // フォームデータの取得
+                const formData = {
+                    q1: parseFloat(q1Slider.value),
+                    q2: parseFloat(q2Slider.value),
+                    q3: parseFloat(q3Slider.value),
+                    q4: parseFloat(document.querySelector('input[type="number"]').value)
+                };
+
+                // 入力値のバリデーション
+                if (!validateForm(formData)) {
+                    alert('すべての項目を正しく入力してください。');
+                    return;
+                }
+
+                try {
+                    // APIリクエスト
+                    const response = await fetch('http://127.0.0.1:5500/calculate.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const result = await response.json();
+                    
+                    // 結果の表示
+                    document.getElementById('probability').textContent = result.probability;
+                    
+                    // 分析結果の表示
+                    const analysisDiv = document.getElementById('analysis');
+                    analysisDiv.innerHTML = '';
+                    result.analysis.forEach(item => {
+                        const p = document.createElement('p');
+                        p.textContent = item;
+                        p.className = 'mt-2';
+                        analysisDiv.appendChild(p);
+                    });
+
+                    // アドバイスの表示
+                    const adviceDiv = document.getElementById('advice');
+                    adviceDiv.innerHTML = '';
+                    result.advice.forEach(item => {
+                        const p = document.createElement('p');
+                        p.textContent = item;
+                        p.className = 'mt-2';
+                        adviceDiv.appendChild(p);
+                    });
+
+                    // 結果エリアの表示
+                    resultArea.classList.remove('hidden');
+                    
+                    // 結果エリアまでスクロール
+                    resultArea.scrollIntoView({ behavior: 'smooth' });
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('計算中にエラーが発生しました。もう一度お試しください。');
+                }
+            });
+
+            // フォームバリデーション
+            function validateForm(data) {
+                if (isNaN(data.q4) || data.q4 < 0) {
+                    return false;
+                }
+                return true;
+            }
+        });
+    </script>
 </body>
 </html>
